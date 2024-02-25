@@ -1,5 +1,11 @@
 import { Block } from "./block";
 
+/**
+ * 表达式
+ * 特指 常量、变量、运算表达式、函数计算
+ * 
+ * 
+ */
 export class AgeExpress {
     text: string;
     name: string;
