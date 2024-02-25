@@ -91,7 +91,7 @@
                                 "name": "left",
                                 "express": {
                                     "name": "const",
-                                    "value": "我将要发送的消息:"
+                                    "value": "我将要发送的消息"
                                 }
                             },
                             {

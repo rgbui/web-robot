@@ -8,16 +8,16 @@ export class Block {
     task: Task;
     url: string;
     args: AgeExpress[];
+    flow: Block[] = [];
     flow1: Block[] = [];
-    flow2: Block[] = [];
     async excute() {
+        this.task.monitorWillExcute(this);
         try {
 
             this.args.forEach(arg => {
                 if (!arg.isOutput)
                     CacExpress(this, arg)
             })
-            this.task.monitorWillExcute(this);
             this.task.blocked(this);
             switch (this.url) {
                 case '/age/common/print':
@@ -27,7 +27,7 @@ export class Block {
                     await new Promise((resolve, reject) => {
                         setTimeout(() => {
                             resolve(true);
-                        }, this.args[0].cacValue)
+                        }, this.args[0].cacValue * 1000)
                     })
                     break;
                 case '/age/browse/ele/click':
@@ -54,7 +54,7 @@ export class Block {
                 case '/age/common/net':
                     /**
                      * 发起网络请求，
-                     * 返回值存到变量 this.task.dic[this.args[4].value]
+                     * 返回值存到变量  this.task.dic.set(this.args[4].value, await result.text());
                      */
                     var url = CacExpress(this, this.args[0]);
                     var method = CacExpress(this, this.args[1]);
@@ -66,6 +66,13 @@ export class Block {
                         headers: headers
                     })
                     this.task.dic.set(this.args[4].value, await result.text());
+                    break;
+                case '/age/common/script':
+                    // n 个block
+                    // script code== blocks[]
+                    for (let action of this.flow) {
+                        action.excute();
+                    }
                     break;
             }
             //fun(args1,args)
@@ -84,7 +91,7 @@ export class BlockWhile extends Block {
         while (true) {
             var r = CacExpress(this, this.args[0])
             if (r == true) {
-                for (let act of this.flow1) {
+                for (let act of this.flow) {
                     act.excute();
                 }
             }
@@ -101,23 +108,26 @@ export class BlockIf extends Block {
         this.task.monitorWillExcute(this);
         var r = CacExpress(this, this.args[0])
         if (r) {
-            for (let act of this.flow1) {
+            for (let act of this.flow) {
                 act.excute();
             }
         }
         else {
-            for (let act of this.flow2) {
+            for (let act of this.flow1) {
                 act.excute();
             }
         }
         this.task.monitorBlockCompleted(this);
     }
 }
+
 export class BlockVar extends Block {
     async excute() {
+
+        var varName = CacExpress(this, this.args[0])
         var result = CacExpress(this, this.args[1])
         this.task.monitorWillExcute(this);
-        this.task.dic.set(this.args[0].value, result)
+        this.task.dic.set(varName, result)
         this.task.monitorBlockCompleted(this);
     }
 }
