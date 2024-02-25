@@ -2,6 +2,7 @@
 
 import { AgeExpress, CacExpress } from "./express";
 import { Task } from "./task";
+
 export class Block {
     id: string;
     task: Task;
@@ -13,7 +14,7 @@ export class Block {
         try {
 
             this.args.forEach(arg => {
-                if (!arg.isReutrn)
+                if (!arg.isOutput)
                     CacExpress(this, arg)
             })
             this.task.monitorWillExcute(this);
@@ -64,7 +65,7 @@ export class Block {
                         body: data,
                         headers: headers
                     })
-                    this.task.dic[this.args[4].value] = await result.text();
+                    this.task.dic.set(this.args[4].value, await result.text());
                     break;
             }
             //fun(args1,args)
@@ -116,7 +117,7 @@ export class BlockVar extends Block {
     async excute() {
         var result = CacExpress(this, this.args[1])
         this.task.monitorWillExcute(this);
-        this.task.dic[this.args[0].value] = result
+        this.task.dic.set(this.args[0].value, result)
         this.task.monitorBlockCompleted(this);
     }
 }

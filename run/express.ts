@@ -26,7 +26,7 @@ export class AgeExpress {
     /**
      * 是否是返回的变量
      */
-    isReutrn: boolean
+    isOutput: boolean
 }
 
 
