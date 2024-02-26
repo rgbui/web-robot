@@ -36,11 +36,12 @@ export class Task {
 
     }
     blockIds: string[] = [];
-    blocked(flow: Block) {
+  async  blocked(flow: Block) {
         while (true) {
             if (this.blockIds.includes(flow.id)) {
                 continue
             }
+            
             break;
         }
     }

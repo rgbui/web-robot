@@ -18,7 +18,7 @@ export class Block {
                 if (!arg.isOutput)
                     CacExpress(this, arg)
             })
-            this.task.blocked(this);
+           await this.task.blocked(this);
             switch (this.url) {
                 case '/age/common/print':
                     console.log(this.args[0].cacValue)
